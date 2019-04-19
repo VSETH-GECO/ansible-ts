@@ -1,2 +1,7 @@
-[teamspeak]
-ts ansible_host=10.10.0.30 ansible_port=22
+[ts]
+ts1 ansible_host=ts1
+ts2 ansible_host=ts2
+
+[ts:vars]
+ansible_port=22
+service_user=geco

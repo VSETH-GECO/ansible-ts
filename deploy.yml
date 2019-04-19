@@ -1,23 +1,22 @@
 ---
 -   name : Install Teamspeak3 Server
-    hosts: teamspeak
+    hosts: ts
     vars:
-        home: /home/{{ansible_ssh_user}}
+        home: /home/{{service_user}}
     become_method: sudo
-    vars_prompt:
-        -   name: "ansible_become_pass"
-            prompt: "Enter the become_pass"
-            private: yes
+    
     tasks:
         -   name: download teamspeak3 files
             get_url:
                 url:  https://files.teamspeak-services.com/releases/server/3.7.1/teamspeak3-server_linux_amd64-3.7.1.tar.bz2
                 dest: '{{home}}/ts.tar.bz2'
+                owner: '{{service_user}}'
                 
         -   name: mkdir ts
             file:
                 path: '{{home}}/ts'
-                state: directory   
+                state: directory
+                owner: '{{service_user}}'
                 
         -   name: unpack archive
             unarchive:
@@ -25,14 +24,18 @@
                 dest: '{{home}}/ts'
                 copy: no
                 extra_opts: [--strip-components=1]
+                owner: '{{service_user}}'
+                
         -   name: delete archive
             file:
                 path: '{{home}}/ts.tar.bz2'
                 state: absent        
+                
         -   name: accept ts3_license
             file:
                 path: '{{home}}/ts/.ts3server_license_accepted'
                 state: touch
+                owner: '{{service_user}}'
                 
         -   name: copy service template
             template:
